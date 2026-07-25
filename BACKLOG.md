@@ -40,6 +40,12 @@ Phase 2b — Hebbian reshaping (`ledger.js`), built + proven 2026-07-25:
 - [ ] Validate on the REAL memory corpus (not just the labelled set), then flip the field
   on by default (drop the `SIMPLE_MEMORY_FIELD` gate).
 
+Zero-terminal UX (`panel.js`, `config.json`, launchers) — built + tested 2026-07-25:
+- [x] Field controlled by shared `config.json`, read per recall (live toggle, no restart).
+- [x] Local browser control panel with a real toggle switch; double-click launchers.
+- [ ] Decide the installer path: `.bat`/`.command` + Node-prereq (fast) vs a single bundled
+  executable via Node SEA/`pkg` (no Node needed — true zero-terminal). Then package as a repo.
+
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2c — only after 2a/2b prove out)
 
 Course correction (2026-07-25): Lantern's crate has **no embeddings/vector search** and its

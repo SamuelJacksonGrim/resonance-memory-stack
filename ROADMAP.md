@@ -96,6 +96,25 @@ unchanged against a Lantern backend.
 
 ---
 
+## Distribution / zero-terminal UX
+
+The people who want this mostly can't use a terminal (Samuel, 2026-07-25: "you can't ship
+grit as a dependency"). Progress toward one-click:
+
+- [x] **Live config toggle.** The field is controlled by a shared `config.json` the MCP
+  server reads *per recall* — flip it and it applies with **no restart**. `SIMPLE_MEMORY_FIELD`
+  env stays as the fallback default. (Tested: on→off→on live in one running process.)
+- [x] **Browser control panel** (`panel.js`). A local 127.0.0.1 page with a real toggle
+  switch for the field; writes `config.json`. Double-click launchers `start-panel.bat` /
+  `start-panel.command`. Tested: `/api/state`, `/api/toggle`, page render, and live pickup.
+- [ ] **Installer + the Node blocker (open decision).** A never-coded user has no Node.js
+  runtime, so `.bat`/`.command` still fails with a terminal-shaped error. Fork: (a) ship
+  `.bat`/`.command` + a one-time Node install link (fast, but breaks true foolproof), or
+  (b) bundle a single double-click executable via Node SEA / `pkg` (no Node prereq — the
+  real answer to "never coded"), accepting the unsigned-app warning + more build effort.
+  Windows `.exe` is buildable/testable on this box; the Mac binary is not.
+- [ ] Whole-system on/off = the client's native MCP server toggle (document it).
+
 ## Cross-cutting (spans multiple repos)
 
 - [ ] **One ranker, fed rich-to-rich.** Whatever becomes "the ranker" compares full query
