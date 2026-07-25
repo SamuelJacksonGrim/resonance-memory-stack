@@ -43,8 +43,11 @@ Phase 2b — Hebbian reshaping (`ledger.js`), built + proven 2026-07-25:
 Zero-terminal UX (`panel.js`, `config.json`, launchers) — built + tested 2026-07-25:
 - [x] Field controlled by shared `config.json`, read per recall (live toggle, no restart).
 - [x] Local browser control panel with a real toggle switch; double-click launchers.
-- [ ] Decide the installer path: `.bat`/`.command` + Node-prereq (fast) vs a single bundled
-  executable via Node SEA/`pkg` (no Node needed — true zero-terminal). Then package as a repo.
+- [x] Bundled single executable via Node SEA (`build-exe.js` → `memory.exe`, 88 MB, no Node
+  needed). Both modes tested: `--mcp` server + double-click panel. Unsigned (SmartScreen).
+- [ ] Auto-installer: `memory.exe --install` wires `memory.exe --mcp` into the client config
+  (LM Studio / Claude Desktop) so a no-Node user needs zero manual steps.
+- [ ] Build the Mac binary on a Mac; package as a (public?) repo with exe release assets.
 
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2c — only after 2a/2b prove out)
 

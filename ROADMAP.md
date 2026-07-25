@@ -107,12 +107,17 @@ grit as a dependency"). Progress toward one-click:
 - [x] **Browser control panel** (`panel.js`). A local 127.0.0.1 page with a real toggle
   switch for the field; writes `config.json`. Double-click launchers `start-panel.bat` /
   `start-panel.command`. Tested: `/api/state`, `/api/toggle`, page render, and live pickup.
-- [ ] **Installer + the Node blocker (open decision).** A never-coded user has no Node.js
-  runtime, so `.bat`/`.command` still fails with a terminal-shaped error. Fork: (a) ship
-  `.bat`/`.command` + a one-time Node install link (fast, but breaks true foolproof), or
-  (b) bundle a single double-click executable via Node SEA / `pkg` (no Node prereq — the
-  real answer to "never coded"), accepting the unsigned-app warning + more build effort.
-  Windows `.exe` is buildable/testable on this box; the Mac binary is not.
+- [x] **Bundled single executable (no Node prereq).** Chosen path (b): Node SEA. `memory.exe`
+  (88 MB) built via `build-exe.js` (esbuild → SEA blob → postject); sources stay editable,
+  rebuild = re-run the script. `memory.exe --mcp` = MCP server; `memory.exe` (double-click) =
+  control panel. Both modes tested and pass. Caveat: unsigned → SmartScreen/Gatekeeper
+  "run anyway" prompt (real code-signing costs money). Built/tested on Windows; the **Mac
+  binary must be built on a Mac** (SEA is per-platform).
+- [ ] **Auto-installer.** Wire `memory.exe --mcp` into the client config automatically
+  (`memory.exe --install` detects LM Studio / Claude Desktop config, or a panel button).
+  Today the exe runs; wiring into a new user's client is still manual.
+- [ ] **Package as a (public?) repo** with the exe as a release asset, a plain-language
+  README, and a LICENSE.
 - [ ] Whole-system on/off = the client's native MCP server toggle (document it).
 
 ## Cross-cutting (spans multiple repos)
