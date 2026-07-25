@@ -14,25 +14,23 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done.
 Goal: a memory server GPT-OSS-20B-class models cannot misuse, that scales past a handful
 of memories. Contained to `C:\Users\spamw\tools\simple-memory\server.js` (~200 lines).
 
-- [ ] **Embed-on-save.** Embed once at save-time, store the vector in the record. Recall
-  embeds only the query, then cosine against stored vectors. (Today it re-embeds every
-  memory on every recall — O(n) embed calls per query.) Pattern already proven by
-  `recall.ps1 -Rebuild` and its `memory-embeddings.json` cache.
-- [ ] **`edit_memory(id, text)`** — replace text, regenerate embedding, update `modified`.
-- [ ] **`delete_memory(id)`** — soft delete (`deleted=true`) + periodic `vacuum()`. Stable
-  IDs, recoverable.
-- [ ] **Server-owned metadata**, never exposed to the model: `id, created, modified, text,
+- [x] **Embed-on-save.** Embed once at save-time, store the vector in the record. Recall
+  embeds only the query (+ any legacy vectorless records, backfilled once), then cosine
+  against stored vectors. Pattern proven by `recall.ps1 -Rebuild` / `memory-embeddings.json`.
+- [x] **`edit_memory(id, text)`** — replace text, regenerate embedding, update `modified`.
+- [x] **`delete_memory(id)`** — soft delete (`deleted=true`) + `vacuum()` (runs at startup
+  when deleted rows exist). Stable IDs, recoverable.
+- [x] **Server-owned metadata**, never exposed to the model: `id, created, modified, text,
   embedding, importance, access_count, last_access, deleted`.
-- [ ] **Abstract `Store` interface** behind the four verbs (verbs call `Store`, not
-  `fs.appendFileSync` directly). JSONL is the first implementation; Lantern is the second.
-- [ ] **Ranking = cosine only.** Keep `importance/access_count/durability` as stored
-  substrate metadata governing *retention*, never *retrieval order* — until a labelled-set
-  A/B proves blending helps. (Measured: adding a durability weight to cosine inverted
-  correct rankings — see the ranking constraint below.)
+- [x] **Abstract `Store` interface** (`JsonlStore`) behind the four verbs — verbs call the
+  store, not `fs` directly. JSONL is the first implementation; Lantern is the second.
+- [x] **Ranking = cosine only.** `importance/access_count` are stored and bumped on recall
+  for *retention*, never folded into *retrieval order* — until a labelled-set A/B proves it.
 
 **Acceptance:** MCP round-trip (initialize / tools-list / save / recall / edit / delete /
-empty-guard) passes; recall issues exactly one embedding call regardless of store size;
-ranking is pure cosine; a small local model uses it end-to-end without touching internals.
+empty-guard / bad-id) — **PASSED 2026-07-25** (`scratchpad/mcptest2.js`, endpoint up, vector
+stored, pure-cosine recall correct). Remaining: field-verify the actual local model
+(GPT-OSS-20B-class) drives all four verbs end-to-end in an LM Studio session.
 
 ---
 

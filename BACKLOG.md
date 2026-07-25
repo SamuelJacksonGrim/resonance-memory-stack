@@ -9,20 +9,22 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done.
 
 ## simple-memory  · `C:\Users\spamw\tools\simple-memory\server.js`  (Phase 1)
 
-The whole Phase 1 spec lives here. Contained ~200-line file.
+The whole Phase 1 spec lives here. Contained ~230-line file. **Shipped 2026-07-25** (v2;
+local tool, not a GitHub repo — "shipped" = `server.js` updated, `server.js.bak` kept).
 
-- [ ] Embed-on-save: store the vector in each JSONL record at save time.
-- [ ] Recall embeds only the query; cosine against stored vectors (drop the per-recall
-  re-embed of the whole store).
-- [ ] Add `edit_memory(id, text)` — replace text, regen embedding, bump `modified`.
-- [ ] Add `delete_memory(id)` — soft delete (`deleted=true`); skip deleted on recall.
-- [ ] Add periodic `vacuum()` to rewrite the JSONL without deleted rows.
-- [ ] Extend record schema: `id, created, modified, text, embedding, importance,
+- [x] Embed-on-save: store the vector in each JSONL record at save time.
+- [x] Recall embeds only the query (+ legacy vectorless records, backfilled once); cosine
+  against stored vectors. Dropped the per-recall re-embed of the whole store.
+- [x] Add `edit_memory(id, text)` — replace text, regen embedding, bump `modified`.
+- [x] Add `delete_memory(id)` — soft delete (`deleted=true`); recall uses `active()` only.
+- [x] `vacuum()` rewrites the JSONL without deleted rows (runs at startup when needed).
+- [x] Extend record schema: `id, created, modified, text, embedding, importance,
   access_count, last_access, deleted`. Bump `access_count`/`last_access` on recall.
-- [ ] Introduce a `Store` abstraction; `save/recall/edit/delete` call it, not `fs` directly.
-- [ ] Keep ranking = pure cosine. Do NOT fold importance/recency into rank yet.
-- [ ] Re-run the full MCP round-trip test (`scratchpad\mcptest.js` pattern) incl. edit/delete.
-- [ ] Keep the empty-content guard. Keep the keyword-overlap fallback for endpoint outages.
+- [x] `JsonlStore` abstraction; `save/recall/edit/delete` call it, not `fs` directly.
+- [x] Ranking = pure cosine. importance/recency NOT folded into rank.
+- [x] Full MCP round-trip test (`scratchpad/mcptest2.js`) incl. edit/delete/bad-id — PASSED.
+- [x] Empty-content guard kept; keyword-overlap fallback for endpoint outages kept.
+- [ ] Field-verify the actual local model drives all four verbs in an LM Studio session.
 
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2 + own bugs)
 
