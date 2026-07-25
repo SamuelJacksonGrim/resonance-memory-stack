@@ -64,12 +64,25 @@ and no new embed calls.**
   cosine 0.596 vs cross 0.462 (gap 0.134); kNN edge precision k=1 **0.933**, k=2 **0.900**,
   k=3 0.756 vs chance **0.200**; example neighborhoods stayed on-topic. Edges are real.
 
-### Phase 2b — reshaping with use  (next)
-- [ ] Co-activation reinforcement (Hebbian): memories recalled together strengthen their
-  edge; persisted in a sidecar. Never touches query ranking (memory↔memory strength is a
-  distinct quantity from query relevance).
-- [ ] Decay of unreinforced edges; optional concept/entity enrichment (the harder,
-  deferrable extraction layer — only if it beats the pure-vector field on real data).
+### Phase 2b — reshaping with use  ✅ built + proven (2026-07-25)
+Hebbian sidecar (`ledger.js`), separate from the vector store. Design hardened across a
+Claude/Gemini review; three corrections baked in:
+- [x] **Co-activation reinforcement**, provenance-discounted: primary↔primary `α=0.1`,
+  primary↔neighborhood `α=0.02`, neighborhood↔neighborhood `0` — so the graph learns from
+  the user's queries, not from its own suggestions (breaks the self-reinforcing loop).
+- [x] **Bounded blend** (not unbounded add): neighborhood score = `cosine + 0.3·tanh(weight)`.
+  Frequency can lift a weak edge over the 0.55 gate but can never swamp the semantic floor.
+- [x] **Canonical undirected edge key** (ids sorted) so `a:b` and `b:a` are one edge.
+- [x] **Decay + prune**: every 10th recall, `weight *= 0.95`; drop below 0.05.
+- [x] Wired into recall behind `SIMPLE_MEMORY_FIELD=1`; primary path still byte-identical
+  (Phase 1 regression still passes). Reinforcement never touches query ranking.
+- [x] **Deterministic proof** (`scratchpad/simulate_2b.js`, 10/10): climb == 5·α; neigh↔neigh
+  stays 0; unreinforced edge prunes at exactly n=14 epochs; a 0.40-cosine pair enters the
+  neighborhood after exactly 6 co-activations (score 0.561); bonus bounded < 0.3. Sidecar
+  save/load round-trips.
+
+Deferred: concept/entity enrichment (the harder extraction layer) — only if it beats the
+pure-vector field on real data. Not needed for the field to work.
 
 ### Phase 2c — port to Rust-Lantern  (only once 2a/2b prove out)
 - [ ] Install a Rust toolchain; add embeddings + file-backed SQLite + cosine + the proven
