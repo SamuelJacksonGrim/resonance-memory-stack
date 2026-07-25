@@ -24,7 +24,8 @@ local tool, not a GitHub repo — "shipped" = `server.js` updated, `server.js.ba
 - [x] Ranking = pure cosine. importance/recency NOT folded into rank.
 - [x] Full MCP round-trip test (`scratchpad/mcptest2.js`) incl. edit/delete/bad-id — PASSED.
 - [x] Empty-content guard kept; keyword-overlap fallback for endpoint outages kept.
-- [ ] Field-verify the actual local model drives all four verbs in an LM Studio session.
+- [x] Field-verified: `openai/gpt-oss-20b` drove all four verbs across fresh conversations
+  (5/5, recalled-before-edit, well-formed ids) — 2026-07-25. **Phase 1 done.**
 
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2 + own bugs)
 

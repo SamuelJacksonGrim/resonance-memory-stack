@@ -29,8 +29,10 @@ of memories. Contained to `C:\Users\spamw\tools\simple-memory\server.js` (~200 l
 
 **Acceptance:** MCP round-trip (initialize / tools-list / save / recall / edit / delete /
 empty-guard / bad-id) — **PASSED 2026-07-25** (`scratchpad/mcptest2.js`, endpoint up, vector
-stored, pure-cosine recall correct). Remaining: field-verify the actual local model
-(GPT-OSS-20B-class) drives all four verbs end-to-end in an LM Studio session.
+stored, pure-cosine recall correct). **Field test PASSED 2026-07-25** — `openai/gpt-oss-20b`
+drove all four verbs end-to-end across fresh conversations (true cross-session), 5/5 verbs,
+recalled-before-edit to fetch the id, edit/delete ids well-formed. The model that failed the
+knowledge-graph server drives the four-verb server flawlessly. **Phase 1 complete.**
 
 ---
 
