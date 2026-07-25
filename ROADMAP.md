@@ -38,24 +38,48 @@ knowledge-graph server drives the four-verb server flawlessly. **Phase 1 complet
 
 ## Phase 2 — Lantern (the associative memory field)
 
-Goal: the hypergraph substrate behind the *same* MCP API. This is where "infer the
-neighborhood" lives — the hard step Phase 1 deliberately does not attempt.
+Goal: the associative memory field — recall a *region*, not a record. This is where
+"infer the neighborhood" lives.
 
-**Prerequisites before Lantern can back Simple Memory:**
-- [ ] **File-backed SQLite.** Today `Hypergraph::ignite()` opens `:memory:` → forgets on
-  restart. Plumb the file path (currently stubbed).
-- [ ] **Semantic / vector query path.** Today `/query` is `query_by_source_type` (exact
-  type match). A store backing Simple Memory needs vector recall.
+**Course correction (2026-07-25), after reading Lantern's crate.** Two facts reshaped
+this phase: (1) Lantern's `lantern_memory` crate is an edge-weight hypergraph with *zero*
+embeddings / vector search, and its daemon won't build on this box (webkit2gtk); (2)
+`simple-memory` already has the two listed "prerequisites" (JSONL is persistent; it does
+embed-on-save + cosine recall). So a like-for-like port to Rust-Lantern would be *strictly
+worse* — reimplementing working Node minus any new capability. Lantern's only real add is
+the field itself. Decision: **prototype the field in Node first, prove its value, then port
+the proven design to Rust-Lantern.** (Samuel's call, 2026-07-25.)
 
-**Then the field:**
-- [ ] Entity extraction (hybrid: store raw immediately, enrich edges in a background
-  maintenance pass — never block `save_memory()` on extraction).
-- [ ] Relationship inference → hypergraph edges.
-- [ ] Activation propagation / neighborhood expansion on recall.
-- [ ] Swap Simple Memory's `Store` to a Lantern-backed implementation. No MCP API change.
+**Key enabling insight:** association between two *stored memories* is a full-text ↔
+full-text comparison — the RICH-TO-RICH regime the finding proved works — so the semantic
+association graph is buildable from the vectors we already store, with **no LLM extraction
+and no new embed calls.**
 
-**Acceptance:** Simple Memory runs unchanged against a Lantern backend; recall returns a
-weighted neighborhood, not just a flat list; extraction runs off the hot path.
+### Phase 2a — Node associative field  ✅ built + measured (2026-07-25)
+- [x] `field.js`: per-node kNN association edges from stored vectors (rich-to-rich cosine).
+- [x] `neighborhood()`: expand from cosine seeds to related memories.
+- [x] Wired into `recall_memory` as an opt-in additive layer (`SIMPLE_MEMORY_FIELD=1`);
+  primary cosine results are byte-identical to Phase 1 (regression test still passes).
+- [x] **Measured** on a labelled clustered set (real nomic embeddings): within-cluster
+  cosine 0.596 vs cross 0.462 (gap 0.134); kNN edge precision k=1 **0.933**, k=2 **0.900**,
+  k=3 0.756 vs chance **0.200**; example neighborhoods stayed on-topic. Edges are real.
+
+### Phase 2b — reshaping with use  (next)
+- [ ] Co-activation reinforcement (Hebbian): memories recalled together strengthen their
+  edge; persisted in a sidecar. Never touches query ranking (memory↔memory strength is a
+  distinct quantity from query relevance).
+- [ ] Decay of unreinforced edges; optional concept/entity enrichment (the harder,
+  deferrable extraction layer — only if it beats the pure-vector field on real data).
+
+### Phase 2c — port to Rust-Lantern  (only once 2a/2b prove out)
+- [ ] Install a Rust toolchain; add embeddings + file-backed SQLite + cosine + the proven
+  edge model to `lantern_memory`; expose a Tauri-free HTTP service.
+- [ ] A Node `LanternStore` implementing the same surface as `JsonlStore`; swap via env,
+  no MCP API change. Then the field lives in the substrate Lantern was designed to be.
+
+**Acceptance:** recall returns a coherent weighted neighborhood, not just a flat list, with
+the field off-by-default-safe; the reshaping is measurable; and (2c) Simple Memory runs
+unchanged against a Lantern backend.
 
 ---
 
