@@ -31,8 +31,14 @@ Phase 2a — associative field (Node prototype, in `field.js`):
 - [x] kNN association graph from stored vectors (rich-to-rich); `neighborhood()` expansion.
 - [x] Wired into recall as opt-in `SIMPLE_MEMORY_FIELD=1`; Phase 1 output unchanged when off.
 - [x] Measured meaningful: kNN edge precision k=2 = 0.900 vs chance 0.200 (2026-07-25).
-- [ ] Phase 2b: co-activation reinforcement (sidecar) + edge decay; make field default once
-  it's proven on the real memory corpus, not just the labelled set.
+
+Phase 2b — Hebbian reshaping (`ledger.js`), built + proven 2026-07-25:
+- [x] Co-activation reinforcement, provenance-discounted (0.1 / 0.02 / 0).
+- [x] Bounded tanh blend (`cosine + 0.3·tanh(weight)`); canonical sorted edge key.
+- [x] Decay (`*0.95` every 10 recalls) + prune below 0.05.
+- [x] Deterministic sim 10/10 (`scratchpad/simulate_2b.js`); sidecar save/load round-trips.
+- [ ] Validate on the REAL memory corpus (not just the labelled set), then flip the field
+  on by default (drop the `SIMPLE_MEMORY_FIELD` gate).
 
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2c — only after 2a/2b prove out)
 
