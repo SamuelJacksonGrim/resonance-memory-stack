@@ -113,12 +113,16 @@ grit as a dependency"). Progress toward one-click:
   control panel. Both modes tested and pass. Caveat: unsigned → SmartScreen/Gatekeeper
   "run anyway" prompt (real code-signing costs money). Built/tested on Windows; the **Mac
   binary must be built on a Mac** (SEA is per-platform).
-- [ ] **Auto-installer.** Wire `memory.exe --mcp` into the client config automatically
-  (`memory.exe --install` detects LM Studio / Claude Desktop config, or a panel button).
-  Today the exe runs; wiring into a new user's client is still manual.
+- [x] **Auto-installer (zero-terminal).** `install.js` detects LM Studio + Claude Desktop,
+  writes an `mcpServers["simple-memory"]` entry pointing at `memory.exe --mcp`, preserves
+  other servers, leaves a `.bak`. Exposed two ways: a **Connect/Disconnect button in the
+  panel** (`/api/clients`, `/api/connect`, `/api/disconnect`) and CLI `--install`/`--uninstall`.
+  All tested against temp configs; full flow present→connected verified through the exe.
 - [ ] **Package as a (public?) repo** with the exe as a release asset, a plain-language
-  README, and a LICENSE.
+  README ("what this does" / "how it works" for non-coders running local LLMs), and a LICENSE.
 - [ ] Whole-system on/off = the client's native MCP server toggle (document it).
+- [ ] Polish: store defaults to `~/.lmstudio/...` even for Claude-only users — pick a
+  client-neutral default data dir.
 
 ## Cross-cutting (spans multiple repos)
 

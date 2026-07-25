@@ -45,9 +45,12 @@ Zero-terminal UX (`panel.js`, `config.json`, launchers) — built + tested 2026-
 - [x] Local browser control panel with a real toggle switch; double-click launchers.
 - [x] Bundled single executable via Node SEA (`build-exe.js` → `memory.exe`, 88 MB, no Node
   needed). Both modes tested: `--mcp` server + double-click panel. Unsigned (SmartScreen).
-- [ ] Auto-installer: `memory.exe --install` wires `memory.exe --mcp` into the client config
-  (LM Studio / Claude Desktop) so a no-Node user needs zero manual steps.
+- [x] Auto-installer (`install.js`): detects LM Studio + Claude Desktop, wires
+  `memory.exe --mcp`, preserves other servers, `.bak` backup. Panel Connect/Disconnect
+  buttons + CLI `--install`/`--uninstall`. Tested against temp configs.
 - [ ] Build the Mac binary on a Mac; package as a (public?) repo with exe release assets.
+- [ ] Write the plain-language README ("what this does" / "how it works") for non-coders.
+- [ ] Client-neutral default data dir (not `~/.lmstudio`).
 
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2c — only after 2a/2b prove out)
 
