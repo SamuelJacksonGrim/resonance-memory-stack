@@ -27,17 +27,23 @@ local tool, not a GitHub repo — "shipped" = `server.js` updated, `server.js.ba
 - [x] Field-verified: `openai/gpt-oss-20b` drove all four verbs across fresh conversations
   (5/5, recalled-before-edit, well-formed ids) — 2026-07-25. **Phase 1 done.**
 
-## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2 + own bugs)
+Phase 2a — associative field (Node prototype, in `field.js`):
+- [x] kNN association graph from stored vectors (rich-to-rich); `neighborhood()` expansion.
+- [x] Wired into recall as opt-in `SIMPLE_MEMORY_FIELD=1`; Phase 1 output unchanged when off.
+- [x] Measured meaningful: kNN edge precision k=2 = 0.900 vs chance 0.200 (2026-07-25).
+- [ ] Phase 2b: co-activation reinforcement (sidecar) + edge decay; make field default once
+  it's proven on the real memory corpus, not just the labelled set.
 
-Prerequisites to become a Simple Memory backend:
+## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2c — only after 2a/2b prove out)
+
+Course correction (2026-07-25): Lantern's crate has **no embeddings/vector search** and its
+daemon won't build here (webkit2gtk); simple-memory already has persistence + vector recall.
+So Lantern becomes the field's substrate *after* the field design is proven in Node — not a
+like-for-like store swap. Prereqs when we get there:
+- [ ] Install Rust toolchain (none on this box).
 - [ ] File-backed SQLite: plumb the stubbed path; stop opening `:memory:`.
-- [ ] Semantic/vector query path (current `/query` is exact `source_type` match only).
-
-Field work (after prereqs):
-- [ ] Background entity extraction (async maintenance pass, never blocks `save`).
-- [ ] Relationship inference → edges.
-- [ ] Activation propagation on recall.
-- [ ] Provide a `Store` implementation Simple Memory can point at (same MCP API).
+- [ ] Add embeddings + cosine vector recall + the proven edge model to `lantern_memory`.
+- [ ] Tauri-free HTTP service; a Node `LanternStore` (same surface as `JsonlStore`), env-swap.
 
 Pre-existing bugs (flagged in-repo, fix deliberately):
 - [ ] **Bug 3** — `remember()` takes a `read()` lock for SQL writes; should be `write()`.
