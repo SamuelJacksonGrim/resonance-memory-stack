@@ -68,6 +68,17 @@ Zero-terminal UX (`panel.js`, `config.json`, launchers) — built + tested 2026-
 - [ ] Write the plain-language README ("what this does" / "how it works") for non-coders.
 - [ ] Client-neutral default data dir (not `~/.lmstudio`).
 
+Proactive save/recall nudge — the "model forgets to press the button" fix (done 2026-07-26):
+- [x] Rewrote all four tool `description`s to encode WHEN, not just what: save fires
+  proactively on durable facts (with anti-spam guards — no small talk/secrets, prefer
+  edit over duplicate); recall fires at conversation start + on back-references; edit/
+  delete carry "recall first to get the id". Fed to the model every turn, zero user setup.
+- [x] `system-prompt.md` — optional copy-paste block for the client's system prompt, for
+  weaker models that still under-call tools. Stronger lever, opt-in.
+- [x] Rebuilt `memory.exe`; confirmed the exe serves the new descriptions in `--mcp` mode.
+- [ ] Surface the `system-prompt.md` snippet in the panel with a one-click Copy button
+  (pairs with the plain-language README pass).
+
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2c — only after 2a/2b prove out)
 
 Course correction (2026-07-25): Lantern's crate has **no embeddings/vector search** and its
