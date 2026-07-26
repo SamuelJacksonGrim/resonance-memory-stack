@@ -38,7 +38,23 @@ Phase 2b — Hebbian reshaping (`ledger.js`), built + proven 2026-07-25:
 - [x] Decay (`*0.95` every 10 recalls) + prune below 0.05.
 - [x] Deterministic sim 10/10 (`scratchpad/simulate_2b.js`); sidecar save/load round-trips.
 - [ ] Validate on the REAL memory corpus (not just the labelled set), then flip the field
-  on by default (drop the `SIMPLE_MEMORY_FIELD` gate).
+  on by default (drop the `SIMPLE_MEMORY_FIELD` gate). **Acceptance test** — run
+  `inspect_sidecar.js` after a few real field-on sessions; all four must hold:
+  1. **Breathing** — edge count rises within a session, then falls as recalls tick the
+     decay (`*0.95`/10 recalls). Red flag: count climbs day over day, never falls → the
+     0.95 decay or 0.05 floor is too weak for real conversation drift (hairball).
+     *Note: decay is recall-driven, not wall-clock — it only shrinks as you keep recalling.*
+  2. **Semantic leaps** — inspect edges with HIGH learned weight but LOW base cosine
+     (< 0.55). The two joined memories should be an intuitive link, not filler that
+     co-fired. Red flag: threshold-crossers are generic → `0.3·tanh` cap too generous.
+  3. **Provenance dominance** — top-weight edges are core, repeatedly-typed projects.
+     Red flag: high weight between obscure pairs you didn't type recently → the 0.02
+     neighborhood discount is too weak; the graph is validating its own noise.
+  4. **Hot-path** — no perceptible stutter from the 10th-recall `writeFileSync`. Low risk
+     (decay keeps the file tiny); fix = debounce/async if it ever bites.
+  Tool: `inspect_sidecar.js` (dependency-free) joins edge ids → memory text and recomputes
+  base cosine so leaps/provenance are actually judgeable. Local working copy lives in
+  `C:\Users\spamw\tools\simple-memory\`; archival copy in `scripts/` here.
 
 Zero-terminal UX (`panel.js`, `config.json`, launchers) — built + tested 2026-07-25:
 - [x] Field controlled by shared `config.json`, read per recall (live toggle, no restart).
