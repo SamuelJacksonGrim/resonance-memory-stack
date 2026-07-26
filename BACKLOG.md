@@ -135,6 +135,8 @@ Dashboard / UX (Samuel, 2026-07-26):
 - [ ] **"Support the Architect" / "Buy a Coffee" link** in the `panel.js` UI — discreet,
   alongside the system controls. The sovereignty crowd actively wants to fund tools that
   respect them; donations are the low-friction on-ramp ahead of commercial licensing.
+  Links: **Ko-fi** https://ko-fi.com/thearchitectofresonance · **PayPal**
+  https://paypal.me/SamuelGrim91
 
 Positioning & docs (Samuel, 2026-07-26):
 - [ ] **Frame it as a "personal brain," not a search bar** — market the passive *contextual
