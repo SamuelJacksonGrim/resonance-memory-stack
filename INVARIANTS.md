@@ -6,8 +6,10 @@ it from drifting every time one of those changes. When a proposed change violate
 these, the change is wrong, not the invariant — unless the invariant is retired here first,
 in writing, with the reason.
 
-Status: **draft — pending Gemini review.** Ratified invariants are numbered; unproven ideas
-are parked at the bottom as hypotheses, explicitly *not* invariants.
+Status: **ratified 2026-07-26** (Claude · GPT · Gemini, three review rounds). Numbered
+invariants are locked; unproven ideas are parked at the bottom as hypotheses, explicitly
+*not* invariants. Retiring or amending a numbered invariant requires an entry here with the
+reason.
 
 Every invariant answers one question: **what bug does this prevent?**
 
@@ -72,6 +74,23 @@ The log is the only authoritative state. **Prevents:** unrecoverable state, and 
 the loss of use-learned structure (Hebbian dynamics live in the *recall* stream, not in the
 text; without logging recalls, "fire together, wire together" is unreconstructable). *(Root 1.)*
 
+**Recall-event schema (lightweight).** A recall event stores only what Dynamics replay needs,
+never the full query text:
+`{ ts, query_hash?, primary_ids[], neighborhood_ids[] }`.
+The **primary/neighborhood split is required** — the Hebbian rule is provenance-discounted
+(primary-primary 0.1, primary-neighborhood 0.02, neighborhood-neighborhood 0), so a flat
+`surfaced_ids[]` would erase the very distinction replay depends on. `query_hash` is optional
+(dedup / analytics, not replay). A `selected_ids` field — which surfaced memories the model
+*actually used* — would be a stronger reinforcement signal, but we don't capture it today (the
+server returns text and never learns what was used); parked until that feedback channel exists.
+
+**Bounding log volume — checkpoint + archive.** Hundreds of recalls/hour will grow Layer 0.
+Treat it like a write-ahead log: periodically checkpoint the materialized Knowledge + Dynamics,
+keep only post-checkpoint events on the hot replay path, and **archive** older events (never
+delete — invariant 10). Full-history rebuild from t=0 stays possible from the archive; routine
+rebuilds replay from the last checkpoint. Checkpoints are optimizations; the archived log is
+truth.
+
 ### 4. Replayability
 Any derived substrate state must be reproducible from the event log and deterministic
 algorithms. Delete Knowledge and Dynamics, replay the log, get the same state back (or the
@@ -106,6 +125,18 @@ decay, consolidation, pruning — governs what stays in the corpus and how it ev
 **never** touches ranking. **Prevents:** ranking pollution, maintenance silently influencing
 relevance, hidden feedback loops. *(Root 2 — measured, not derived. This is the one invariant
 you cannot argue your way into; it had to be observed.)*
+
+**The Hebbian boundary (discovery, not ordering).** Layer 2 (Hebbian dynamics) may decide
+*what enters the candidate/context set* — expanding the horizon to co-recalled neighbors, and
+lifting a low-cosine pair over the edge gate (a "semantic leap"). It must **never** reorder the
+primary result by relevance. The primary list is ordered by pure cosine; the associative
+neighborhood is presented as *context*, explicitly not as a relevance ranking. This is already
+how the code behaves: `server.js` computes the primary `ranked` list from cosine *before* any
+field logic, and `field.js`'s tanh bonus acts only on edge formation and neighborhood gating.
+Measured (Phase 2b): a 0.40-cosine pair enters the neighborhood after 6 co-activations — it
+becomes *reachable*, it does not outrank a direct hit. (Rejected: re-ranking the primary result
+with a Hebbian multiplier — that would fold a dynamics signal into relevance order and reopen
+exactly the pollution Root 2 forbids.)
 
 ### 9. Maintenance is a background, transactional, replayable pass
 `save` stays O(embed): store, embed, done. All expensive work — extract, merge, cluster,
@@ -176,6 +207,6 @@ These are attractive and unproven. They do not go in the numbered list until dat
 ## Standing discipline
 
 The invariants are cheap to write down — they constrain future builds, they are not builds. The
-builds still wait on evidence. As of this draft the associative field is **not yet validated on
+builds still wait on evidence. As of ratification the associative field is **not yet validated on
 the real corpus** (open item in BACKLOG with a four-part acceptance test). Write the philosophy
 down to protect it; measure before pouring the foundation it describes.
