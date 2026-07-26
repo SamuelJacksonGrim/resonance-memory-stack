@@ -79,6 +79,71 @@ Proactive save/recall nudge — the "model forgets to press the button" fix (don
 - [ ] Surface the `system-prompt.md` snippet in the panel with a one-click Copy button
   (pairs with the plain-language README pass).
 
+## resonance-memory (public repo)  · GitHub, GPL-3.0  (publishing, licensing, product)
+
+The public home for simple-memory so the open-source crowd can build on it, while the
+double-click binary is distributed elsewhere as a full download for non-GitHub users.
+Local git repo already initialized in `C:\Users\spamw\tools\simple-memory\` — initial
+commit `db01238` (source only; `memory.exe`, `build/`, `config.json`, `*.bak` gitignored;
+the binary ships as a Release asset, never in history).
+
+Repo + licensing:
+- [ ] Create GitHub repo **`resonance-memory`** (name chosen 2026-07-26); push `db01238`.
+  `gh` is authed in WSL as SamuelJacksonGrim (`repo` scope) — no install/login needed.
+- [ ] **Private-first, then flip public** once LICENSE/CONTRIBUTING/README are right
+  (pending Samuel's confirm: private-first vs public-now).
+- [ ] **LICENSE = GPL-3.0.** Forces anyone who forks/distributes a derivative to keep it open
+  under GPL (the moat), while you (copyright holder) stay free to also sell a proprietary
+  license of the same code (dual licensing).
+- [ ] **CONTRIBUTING.md with a relicensing grant (CLA)** — LOAD-BEARING for monetization: the
+  moment an outside PR is merged under bare GPL, that contributor co-owns the code and you can
+  no longer relicense commercially without their sign-off. The grant preserves the dual-license
+  path. Set up before accepting any PR.
+- [ ] Decision noted: plain **GPL-3.0, not AGPL**. AGPL only matters for the SaaS "network use"
+  loophole; this is a local double-click tool, so GPL fits. Revisit only if hosted resale looms.
+- [ ] Public **README** ("what this does" / "how it works" for non-coders on local LLMs) —
+  merges with the plain-language README item under simple-memory.
+- [ ] Distribution for non-GitHub users: binary as a GitHub **Release asset** (unsigned today →
+  SmartScreen/Gatekeeper; sign later), plus a full download + double-click setup hosted wherever
+  we point non-technical buyers.
+
+recall.ps1 (personal tool — decided 2026-07-26, keep OUT of the public repo):
+- [x] Hardened against cache poisoning (health check, all-or-nothing rebuild, atomic write,
+  `.bak`). Working copy + `recall.ps1.bak` on disk.
+- [ ] Do NOT publish it: hardcodes `C:\Users\spamw\...` (leaks username + dir layout) and
+  signposts the private `.claude\memory` corpus (sensitive personal material). If history is
+  wanted, a separate PRIVATE repo — otherwise local only.
+
+Product feature — pre-populated demo seed graph (Samuel, 2026-07-26):
+- [ ] Ship an **opt-in demo graph** so a buyer's dashboard shows non-obvious associative links
+  the instant they open it — no blank DB, no need to teach them co-activation first.
+- [ ] MUST be 100% **synthetic/curated** (fictional project notes / sample personas) —
+  NEVER real memories. Same exposure risk as recall.ps1, worse.
+- [ ] Needs a **graph VIEW in the panel** (today it's only a toggle) — the demo's value is
+  visual. New feature, pairs with the seed data.
+- [ ] Resolve the **embedding-space wrinkle**: pre-computed vectors are nomic-768; a buyer on a
+  different embedder won't match. Options: pin to nomic, recompute on first load against the
+  buyer's endpoint, or make the demo a read-only visual.
+- [ ] Ship `demo-seed.jsonl` (pre-embedded) + prebuilt `.assoc.json`; panel "Load demo graph"
+  + "Clear demo / start fresh" so it never contaminates the real store.
+
+Dashboard / UX (Samuel, 2026-07-26):
+- [ ] **Visualize "fire together, wire together" live** — the panel graph view should show
+  edges thickening / new links forming *during* a session, so the background Hebbian learning
+  is explicit, not invisible. Same graph view as the demo-seed item above; this is the
+  live/dynamic half — reads the `.assoc.json` ledger and updates as recalls reinforce.
+- [ ] **"Support the Architect" / "Buy a Coffee" link** in the `panel.js` UI — discreet,
+  alongside the system controls. The sovereignty crowd actively wants to fund tools that
+  respect them; donations are the low-friction on-ramp ahead of commercial licensing.
+
+Positioning & docs (Samuel, 2026-07-26):
+- [ ] **Frame it as a "personal brain," not a search bar** — market the passive *contextual
+  recall* (it surfaces what's relevant on its own) rather than active database search. Drives
+  the README voice and the whole pitch.
+- [ ] **Transparent architecture docs in the README** — spell out the Hebbian edge rules, the
+  sub-conscious retrieval flow (recall → neighborhood → reinforcement), and the local-first
+  ethos (nothing leaves the machine). For this audience, transparency IS the selling point.
+
 ## Lantern  · `github.com/SamuelJacksonGrim/Lantern`  (Phase 2c — only after 2a/2b prove out)
 
 Course correction (2026-07-25): Lantern's crate has **no embeddings/vector search** and its
