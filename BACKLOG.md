@@ -7,7 +7,10 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done.
 
 ---
 
-## simple-memory  · `C:\Users\spamw\tools\simple-memory\server.js`  (Phase 1)
+## simple-memory → **Resonance Memory**  · `C:\Users\spamw\tools\resonance-memory\`  (Phase 1)
+
+_Renamed 2026-07-26 (product "Resonance Memory", exe/id/data/env all `resonance-memory`).
+"simple-memory" below is the pre-rename name of this same product._
 
 The whole Phase 1 spec lives here. Contained ~230-line file. **Shipped 2026-07-25** (v2;
 local tool, not a GitHub repo — "shipped" = `server.js` updated, `server.js.bak` kept).
